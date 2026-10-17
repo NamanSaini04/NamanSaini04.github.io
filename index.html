@@ -34,13 +34,13 @@
 @media print{.site-header,.filter-bar,.hero-actions,.contact-section,.site-footer{display:none!important}.hero-layout,.background-layout{grid-template-columns:1fr}.hero-panel{display:none}.section{padding:30px 0}.container{width:100%}.project-card{break-inside:avoid;box-shadow:none}.project-card-wide{display:flex}body{background:#fff}}
 </style>
   <script defer>
-(()=>{const year=document.getElementById('year');if(year)year.textContent=new Date().getFullYear();
+document.addEventListener('DOMContentLoaded',()=>{const year=document.getElementById('year');if(year)year.textContent=new Date().getFullYear();
 const toggle=document.querySelector('.menu-toggle'),nav=document.querySelector('#mobile-nav');
 function closeMenu(){if(nav){nav.hidden=true;}if(toggle){toggle.setAttribute('aria-expanded','false');toggle.setAttribute('aria-label','Open navigation');}}
 if(toggle&&nav){toggle.addEventListener('click',()=>{const open=nav.hidden;nav.hidden=!open;toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',open?'Close navigation':'Open navigation');});nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',closeMenu));document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();});}
 const filters=[...document.querySelectorAll('.filter-button')],cards=[...document.querySelectorAll('.project-card')];
 filters.forEach(btn=>btn.addEventListener('click',()=>{const tag=btn.dataset.filter;filters.forEach(b=>{const on=b===btn;b.classList.toggle('is-active',on);b.setAttribute('aria-pressed',String(on));});cards.forEach(card=>{card.hidden=tag!=='all'&&!card.dataset.tags.split(/\s+/).includes(tag);});}));
-})();
+});
 </script>
 </head>
 <body>
