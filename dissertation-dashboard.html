@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Interactive results dashboard for Naman Saini's MSc Artificial Intelligence dissertation on machine learning and deep learning for network intrusion detection.">
+  <meta name="theme-color" content="#f7f9fc">
+  <link rel="canonical" href="https://www.naman-saini.com/dissertation-dashboard.html">
+  <meta property="og:title" content="Network Intrusion Detection | Dissertation Dashboard">
+  <meta property="og:description" content="Compare seven ML and deep-learning models across CICIDS2017 and UNSW-NB15, including Macro F1, class support and minority-attack performance.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.naman-saini.com/dissertation-dashboard.html">
+  <title>Network Intrusion Detection | Dissertation Dashboard</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%23173c7c'/%3E%3Ctext x='32' y='41' text-anchor='middle' font-family='Arial' font-size='27' font-weight='bold' fill='white'%3ENS%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --ink:#172943;--navy:#102a4e;--blue:#225ab0;--blue2:#3b82d4;--muted:#617186;
+  --line:#e1e8f1;--page:#f7f9fc;--white:#fff;--amber:#d78a1f;--mint:#1ab5ab;
+  --shadow:0 12px 30px rgba(20,41,76,.055);color-scheme:light
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--page);color:var(--ink);font-family:Inter,"Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button,select{font:inherit}
+button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid #438aea;outline-offset:3px}
+.container{width:min(100% - 48px,1180px);margin:auto}
+.site-header{height:76px;position:sticky;top:0;z-index:30;background:rgba(255,255,255,.97);border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}
+.header-inner{height:100%;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.03em}
+.brand-mark{height:38px;width:38px;display:grid;place-items:center;border-radius:10px;background:#183c75;color:white;font-size:12px}
+.back-link{font-size:13px;font-weight:720;color:#315b8f;border:1px solid #ccd9e8;border-radius:9px;padding:10px 14px;background:#fff}
+.back-link:hover{border-color:var(--blue);color:var(--blue)}
+.hero{padding:68px 0 34px;background:radial-gradient(circle at 92% 0%,rgba(197,222,255,.45),transparent 42%),#fff;border-bottom:1px solid #e9eef4}
+.hero-grid{display:grid;grid-template-columns:1.35fr .65fr;gap:50px;align-items:end}
+.eyebrow{font-size:10px;font-weight:820;letter-spacing:.14em;color:#2a63aa;margin:0 0 17px;text-transform:uppercase}
+.hero h1{font-size:clamp(36px,5vw,58px);line-height:1.07;letter-spacing:-.058em;margin:0 0 20px;color:#102b4d}
+.hero h1 span{color:var(--blue)}
+.hero-copy{font-size:15px;line-height:1.78;color:#5b6e84;max-width:720px;margin:0}
+.hero-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+.pill{font-size:11px;font-weight:720;color:#49617d;background:#f3f7fb;border:1px solid #dbe6f1;border-radius:999px;padding:8px 11px}
+.hero-result{background:linear-gradient(145deg,#143763,#0d2646);color:white;border-radius:18px;padding:26px;box-shadow:0 22px 50px rgba(15,39,74,.18)}
+.hero-result small{display:block;font-size:10px;letter-spacing:.12em;font-weight:800;color:#99b8dc;margin-bottom:12px}
+.hero-result strong{display:block;font-size:48px;letter-spacing:-.06em;line-height:1}
+.hero-result span{display:block;color:#c4d5e8;font-size:12px;line-height:1.6;margin-top:11px}
+.section{padding:44px 0}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--shadow)}
+.kpi-label{font-size:9px;letter-spacing:.11em;font-weight:820;color:#7a8ca1;text-transform:uppercase;margin-bottom:11px}
+.kpi-value{font-size:30px;font-weight:800;letter-spacing:-.045em;color:#173c72}
+.kpi-note{font-size:11px;color:#74859a;line-height:1.5;margin-top:7px}
+.tabbar{display:flex;gap:7px;flex-wrap:wrap;margin:4px 0 26px}
+.tabbtn{border:1px solid var(--line);background:#fff;color:#53677e;border-radius:999px;padding:10px 15px;font-size:12px;font-weight:730;cursor:pointer}
+.tabbtn.active{background:#173c7c;color:#fff;border-color:#173c7c}
+.panel[hidden]{display:none}
+.section-head{display:flex;justify-content:space-between;gap:35px;align-items:end;margin-bottom:24px}
+.section-head h2{font-size:30px;letter-spacing:-.045em;margin:0 0 7px;color:#173354}
+.section-head p{font-size:12px;color:#6d7f92;line-height:1.6;margin:0;max-width:600px}
+.card{background:#fff;border:1px solid var(--line);border-radius:15px;box-shadow:var(--shadow)}
+.chart-card{padding:23px 23px 18px}
+.chart-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:18px}
+.chart-head h3{font-size:18px;margin:0;color:#173354}
+.chart-head p{font-size:11px;line-height:1.55;color:#77899d;margin:5px 0 0;max-width:560px}
+.legend{display:flex;gap:15px;flex-wrap:wrap;font-size:10px;color:#677b91;font-weight:700}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:9px;height:9px;border-radius:3px;display:block}
+.dot-blue{background:var(--blue2)}.dot-amber{background:var(--amber)}
+.model-chart{display:grid;gap:15px}
+.model-row{display:grid;grid-template-columns:180px 1fr;gap:15px;align-items:center}
+.model-name{font-size:12px;font-weight:710;color:#3d5570}
+.bar-stack{display:grid;gap:5px}
+.bar-line{height:22px;background:#f2f5f8;border-radius:5px;overflow:hidden;position:relative}
+.bar{height:100%;min-width:2px;border-radius:5px;display:flex;align-items:center;justify-content:flex-end;padding-right:7px;color:#fff;font-size:9px;font-weight:800}
+.bar.blue{background:linear-gradient(90deg,#4d91d5,#2864ab)}.bar.amber{background:linear-gradient(90deg,#e8ab55,#c9811d)}
+.callout{margin-top:20px;background:#f3f8fe;border:1px solid #d7e7f8;border-left:4px solid #2f6eb6;border-radius:11px;padding:15px 17px;color:#536d89;font-size:12px;line-height:1.65}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.control-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+.control-row label{font-size:11px;font-weight:750;color:#60758c}
+select{border:1px solid #cfdbe8;border-radius:8px;background:white;padding:9px 35px 9px 11px;color:#304b69;font-size:12px}
+.single-chart{display:grid;gap:10px}
+.single-row{display:grid;grid-template-columns:170px 1fr 44px;gap:10px;align-items:center}
+.single-label{font-size:11px;color:#4d657f}
+.single-track{height:17px;background:#eef3f7;border-radius:5px;overflow:hidden}
+.single-fill{height:100%;background:linear-gradient(90deg,#488ed4,#265ea6);border-radius:5px}
+.single-value{text-align:right;font-size:10px;font-weight:800;color:#365979}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;font-size:11px}
+th{background:#f2f6fa;color:#62758a;font-size:9px;letter-spacing:.07em;text-transform:uppercase;text-align:left;padding:11px;border-bottom:1px solid #dfe7f0}
+td{padding:11px;border-bottom:1px solid #edf1f5;color:#425a73}
+tr:last-child td{border-bottom:0}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+.class-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.support-bars,.class-bars{display:grid;gap:10px}
+.support-row,.class-row{display:grid;grid-template-columns:130px 1fr 55px;gap:10px;align-items:center}
+.support-label,.class-label{font-size:10px;color:#4c647d}
+.support-track,.class-track{height:16px;background:#f0f4f8;border-radius:5px;overflow:hidden}
+.support-fill{height:100%;background:linear-gradient(90deg,#5aa4dd,#2f6fae);border-radius:5px}
+.class-fill{height:100%;background:linear-gradient(90deg,#e8ad5b,#ca7e18);border-radius:5px}
+.support-value,.class-value{text-align:right;font-size:9px;font-weight:800;color:#5a6f87}
+.note{font-size:11px;color:#7a8c9e;line-height:1.6;margin:15px 0 0}
+.method-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.method-card{padding:22px}
+.method-card h3{margin:0 0 15px;font-size:18px;color:#183a66}
+.method-list{display:grid;gap:0}
+.method-item{display:flex;justify-content:space-between;gap:20px;padding:11px 0;border-bottom:1px solid #edf1f5;font-size:11px}
+.method-item:last-child{border-bottom:0}
+.method-item span:first-child{color:#7a8ca0}.method-item strong{color:#354f6c;text-align:right}
+.limits{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+.limit{background:#fff;border:1px solid var(--line);border-radius:13px;padding:18px}
+.limit h4{font-size:12px;margin:0 0 8px;color:#304e6d}
+.limit p{font-size:10px;color:#72859a;line-height:1.6;margin:0}
+.footer{border-top:1px solid #e4eaf1;padding:25px 0 36px;color:#7f90a3;font-size:10px}
+.footer-inner{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.footer a{color:#2b64a8;font-weight:750}
+@media(max-width:850px){
+  .hero-grid,.split,.class-grid,.method-grid{grid-template-columns:1fr}
+  .hero-result{max-width:430px}.kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .limits{grid-template-columns:1fr 1fr}.model-row{grid-template-columns:130px 1fr}
+}
+@media(max-width:560px){
+  .container{width:min(100% - 28px,1180px)}.site-header{height:68px}.hero{padding-top:48px}
+  .hero h1{font-size:38px}.kpi-grid{grid-template-columns:1fr}.limits{grid-template-columns:1fr}
+  .model-row{grid-template-columns:1fr}.model-name{font-weight:800}.single-row{grid-template-columns:115px 1fr 38px}
+  .support-row,.class-row{grid-template-columns:100px 1fr 45px}.section-head{align-items:start;flex-direction:column}
+}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/"><span class="brand-mark">NS</span><span>naman<span style="color:#225ab0">.</span></span></a>
+    <a class="back-link" href="/#projects">← Back to portfolio</a>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <p class="eyebrow">MSc Artificial Intelligence · University of Bath · Dissertation</p>
+      <h1>Network Intrusion Detection <span>Results Dashboard</span></h1>
+      <p class="hero-copy">A comparative evaluation of seven machine-learning and deep-learning models across CICIDS2017 and UNSW-NB15, with emphasis on class-balanced performance, minority-attack behaviour and dataset dependence.</p>
+      <div class="hero-meta">
+        <span class="pill">7 models</span><span class="pill">2 datasets</span><span class="pill">ANOVA top-40</span><span class="pill">Macro F1 primary metric</span><span class="pill">Dissertation mark: 72%</span>
+      </div>
+    </div>
+    <aside class="hero-result">
+      <small>STRONGEST CLASS-BALANCED MODEL</small>
+      <strong>Random Forest</strong>
+      <span>Macro F1: 0.892 on CICIDS2017 and 0.448 on UNSW-NB15.</span>
+    </aside>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-label">Models evaluated</div><div class="kpi-value">7</div><div class="kpi-note">Linear, tree-based and neural models</div></div>
+      <div class="kpi"><div class="kpi-label">CICIDS2017 best Macro F1</div><div class="kpi-value">0.892</div><div class="kpi-note">Random Forest</div></div>
+      <div class="kpi"><div class="kpi-label">UNSW-NB15 best Macro F1</div><div class="kpi-value">0.448</div><div class="kpi-note">Random Forest</div></div>
+      <div class="kpi"><div class="kpi-label">UNSW highest accuracy</div><div class="kpi-value">0.757</div><div class="kpi-note">XGBoost · weighted F1 0.756</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:8px">
+  <div class="container">
+    <div class="tabbar" role="tablist" aria-label="Dashboard sections">
+      <button class="tabbtn active" data-tab="overview" role="tab" aria-selected="true">Overview</button>
+      <button class="tabbtn" data-tab="classes" role="tab" aria-selected="false">Class performance</button>
+      <button class="tabbtn" data-tab="method" role="tab" aria-selected="false">Methodology & limitations</button>
+    </div>
+
+    <div class="panel" id="overview">
+      <div class="section-head">
+        <div><h2>Model ranking by Macro F1</h2><p>Macro F1 is the primary ranking metric because it gives each attack class equal weight and is less likely than accuracy to hide weak minority-class detection.</p></div>
+        <div class="legend"><span><i class="dot-blue"></i>CICIDS2017</span><span><i class="dot-amber"></i>UNSW-NB15</span></div>
+      </div>
+      <div class="card chart-card">
+        <div class="model-chart" id="macroChart"></div>
+      </div>
+      <div class="callout"><strong>Interpret carefully.</strong> CICIDS2017 used an 80:20 split of a capped experimental sample, while UNSW-NB15 retained its official test set. The two absolute scores are therefore not treated as direct measures of dataset difficulty; the comparison is used to examine ranking stability and dataset dependence.</div>
+
+      <div style="height:30px"></div>
+      <div class="section-head"><div><h2>Explore one dataset</h2><p>Switch the dataset and evaluation metric to inspect how the model ranking changes.</p></div></div>
+      <div class="control-row">
+        <label for="datasetSelect">Dataset</label>
+        <select id="datasetSelect"><option>CICIDS2017</option><option>UNSW-NB15</option></select>
+        <label for="metricSelect">Metric</label>
+        <select id="metricSelect"><option value="macro_f1">Macro F1</option><option value="accuracy">Accuracy</option><option value="macro_recall">Macro Recall</option><option value="macro_precision">Macro Precision</option><option value="weighted_f1">Weighted F1</option></select>
+      </div>
+      <div class="split">
+        <div class="card chart-card"><div class="single-chart" id="singleChart"></div></div>
+        <div class="card table-wrap"><table id="metricsTable"><thead><tr><th>Model</th><th>Acc.</th><th>Macro P</th><th>Macro R</th><th>Macro F1</th><th>Weighted F1</th></tr></thead><tbody></tbody></table></div>
+      </div>
+    </div>
+
+    <div class="panel" id="classes" hidden>
+      <div class="section-head"><div><h2>Minority-class behaviour</h2><p>Aggregate metrics conceal large differences between dominant and rare attack categories.</p></div></div>
+      <div class="class-grid">
+        <div class="card chart-card">
+          <div class="chart-head"><div><h3>UNSW-NB15 official test support</h3><p>Class imbalance in the untouched 82,332-record official test set.</p></div></div>
+          <div class="support-bars" id="supportChart"></div>
+          <p class="note">Normal, Generic and Exploits dominate the test set. Worms has only 44 examples, so its class-specific metrics are unstable.</p>
+        </div>
+        <div class="card chart-card">
+          <div class="chart-head"><div><h3>Random Forest per-class F1</h3><p>The best-Macro-F1 UNSW-NB15 model still performs very unevenly across attack categories.</p></div></div>
+          <div class="class-bars" id="classChart"></div>
+          <p class="note">Generic is detected strongly (F1 0.981), while Analysis (0.028) and Backdoor (0.055) remain weak.</p>
+        </div>
+      </div>
+      <div class="callout"><strong>Operational point.</strong> An undetected attack is usually more serious than a false alarm, although excessive false alarms can still reduce the operational usefulness of an intrusion-detection system.</div>
+    </div>
+
+    <div class="panel" id="method" hidden>
+      <div class="section-head"><div><h2>Experimental design</h2><p>The dashboard preserves the dissertation's methodological boundaries rather than presenting the results as deployment-ready evidence.</p></div></div>
+      <div class="method-grid">
+        <div class="card method-card">
+          <h3>CICIDS2017</h3>
+          <div class="method-list">
+            <div class="method-item"><span>Experimental sample</span><strong>31,193</strong></div>
+            <div class="method-item"><span>Train / test</span><strong>24,954 / 6,239</strong></div>
+            <div class="method-item"><span>Split</span><strong>80:20 stratified</strong></div>
+            <div class="method-item"><span>Feature selection</span><strong>ANOVA F-score · top 40</strong></div>
+            <div class="method-item"><span>Imbalance handling</span><strong>Capping + weighting where supported</strong></div>
+            <div class="method-item"><span>SMOTE</span><strong>Not used</strong></div>
+          </div>
+        </div>
+        <div class="card method-card">
+          <h3>UNSW-NB15</h3>
+          <div class="method-list">
+            <div class="method-item"><span>Training sample</span><strong>60,000</strong></div>
+            <div class="method-item"><span>Official test set</span><strong>82,332 retained</strong></div>
+            <div class="method-item"><span>Split</span><strong>Official train/test design</strong></div>
+            <div class="method-item"><span>Feature selection</span><strong>ANOVA F-score · top 40</strong></div>
+            <div class="method-item"><span>Imbalance handling</span><strong>Down-sampling + model-specific weighting</strong></div>
+            <div class="method-item"><span>SMOTE</span><strong>Not used</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="limits">
+        <div class="limit"><h4>Different test designs</h4><p>Scores are not interpreted as a direct numerical comparison of dataset difficulty.</p></div>
+        <div class="limit"><h4>Capped CICIDS2017 sample</h4><p>Sampling changes original class prevalence and may remove some majority-class variation.</p></div>
+        <div class="limit"><h4>Pre-split median imputation</h4><p>CICIDS2017 imputation before the split creates a limited preprocessing-leakage risk.</p></div>
+        <div class="limit"><h4>Reduced XGBoost subset</h4><p>The reported CICIDS2017 XGBoost run used 6,068 stratified training rows due to runtime constraints.</p></div>
+        <div class="limit"><h4>Unequal neural optimisation</h4><p>UNSW-NB15 MLP, CNN and LSTM used one epoch with batch size 8192.</p></div>
+        <div class="limit"><h4>No controlled ablation</h4><p>Feature selection and class weighting were not isolated experimentally, so causal credit is avoided.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer"><div class="container footer-inner"><span>Naman Saini · MSc Artificial Intelligence · University of Bath · 2026</span><span><a href="https://github.com/NamanSaini04/Network-Intrusion-detection-msc-dissertation" target="_blank" rel="noopener noreferrer">View dissertation repository ↗</a></span></div></footer>
+
+<script>
+const perf = [
+{dataset:"CICIDS2017",model:"Random Forest",accuracy:.969,macro_precision:.899,macro_recall:.910,macro_f1:.892,weighted_f1:.970},
+{dataset:"CICIDS2017",model:"XGBoost",accuracy:.929,macro_precision:.867,macro_recall:.889,macro_f1:.833,weighted_f1:.937},
+{dataset:"CICIDS2017",model:"MLP Neural Network",accuracy:.946,macro_precision:.800,macro_recall:.747,macro_f1:.741,weighted_f1:.937},
+{dataset:"CICIDS2017",model:"SGD Linear SVM",accuracy:.887,macro_precision:.758,macro_recall:.748,macro_f1:.727,weighted_f1:.879},
+{dataset:"CICIDS2017",model:"SGD Logistic Regression",accuracy:.818,macro_precision:.714,macro_recall:.704,macro_f1:.676,weighted_f1:.809},
+{dataset:"CICIDS2017",model:"CNN",accuracy:.812,macro_precision:.746,macro_recall:.663,macro_f1:.663,weighted_f1:.801},
+{dataset:"CICIDS2017",model:"LSTM",accuracy:.504,macro_precision:.421,macro_recall:.382,macro_f1:.381,weighted_f1:.496},
+{dataset:"UNSW-NB15",model:"Random Forest",accuracy:.670,macro_precision:.456,macro_recall:.527,macro_f1:.448,weighted_f1:.721},
+{dataset:"UNSW-NB15",model:"XGBoost",accuracy:.757,macro_precision:.525,macro_recall:.438,macro_f1:.424,weighted_f1:.756},
+{dataset:"UNSW-NB15",model:"SGD Linear SVM",accuracy:.659,macro_precision:.372,macro_recall:.526,macro_f1:.378,weighted_f1:.704},
+{dataset:"UNSW-NB15",model:"SGD Logistic Regression",accuracy:.631,macro_precision:.377,macro_recall:.510,macro_f1:.348,weighted_f1:.674},
+{dataset:"UNSW-NB15",model:"MLP Neural Network",accuracy:.328,macro_precision:.215,macro_recall:.226,macro_f1:.152,weighted_f1:.291},
+{dataset:"UNSW-NB15",model:"LSTM",accuracy:.074,macro_precision:.007,macro_recall:.100,macro_f1:.014,weighted_f1:.010},
+{dataset:"UNSW-NB15",model:"CNN",accuracy:.008,macro_precision:.001,macro_recall:.100,macro_f1:.002,weighted_f1:.000}
+];
+const support = [
+["Normal",37000],["Generic",18871],["Exploits",11132],["Fuzzers",6062],["DoS",4089],
+["Reconnaissance",3496],["Analysis",677],["Backdoor",583],["Shellcode",378],["Worms",44]
+];
+const rfClass = [
+["Analysis",.028],["Backdoor",.055],["DoS",.227],["Exploits",.675],["Fuzzers",.351],
+["Generic",.981],["Normal",.739],["Reconnaissance",.796],["Shellcode",.318],["Worms",.310]
+];
+const modelOrder=["Random Forest","XGBoost","MLP Neural Network","SGD Linear SVM","SGD Logistic Regression","CNN","LSTM"];
+
+function renderMacro(){
+  const el=document.getElementById("macroChart"); el.innerHTML="";
+  modelOrder.forEach(model=>{
+    const a=perf.find(d=>d.dataset==="CICIDS2017"&&d.model===model).macro_f1;
+    const b=perf.find(d=>d.dataset==="UNSW-NB15"&&d.model===model).macro_f1;
+    el.insertAdjacentHTML("beforeend",'<div class="model-row"><div class="model-name">'+model+'</div><div class="bar-stack"><div class="bar-line"><div class="bar blue" style="width:'+Math.max(a*100,.6)+'%">'+a.toFixed(3)+'</div></div><div class="bar-line"><div class="bar amber" style="width:'+Math.max(b*100,.6)+'%">'+b.toFixed(3)+'</div></div></div></div>');
+  });
+}
+const metricNames={macro_f1:"Macro F1",accuracy:"Accuracy",macro_recall:"Macro Recall",macro_precision:"Macro Precision",weighted_f1:"Weighted F1"};
+function renderExplore(){
+  const ds=document.getElementById("datasetSelect").value, metric=document.getElementById("metricSelect").value;
+  const rows=perf.filter(d=>d.dataset===ds).sort((a,b)=>b[metric]-a[metric]);
+  const chart=document.getElementById("singleChart"); chart.innerHTML="";
+  rows.forEach(r=>chart.insertAdjacentHTML("beforeend",'<div class="single-row"><div class="single-label">'+r.model+'</div><div class="single-track"><div class="single-fill" style="width:'+Math.max(r[metric]*100,.6)+'%"></div></div><div class="single-value">'+r[metric].toFixed(3)+'</div></div>'));
+  const tbody=document.querySelector("#metricsTable tbody"); tbody.innerHTML="";
+  rows.forEach(r=>tbody.insertAdjacentHTML("beforeend",'<tr><td>'+r.model+'</td><td class="num">'+r.accuracy.toFixed(3)+'</td><td class="num">'+r.macro_precision.toFixed(3)+'</td><td class="num">'+r.macro_recall.toFixed(3)+'</td><td class="num"><strong>'+r.macro_f1.toFixed(3)+'</strong></td><td class="num">'+r.weighted_f1.toFixed(3)+'</td></tr>'));
+}
+function renderSupport(){
+  const el=document.getElementById("supportChart"), max=Math.max(...support.map(d=>d[1])); el.innerHTML="";
+  support.forEach(([name,val])=>el.insertAdjacentHTML("beforeend",'<div class="support-row"><div class="support-label">'+name+'</div><div class="support-track"><div class="support-fill" style="width:'+Math.max((Math.log10(val+1)/Math.log10(max+1))*100,2)+'%"></div></div><div class="support-value">'+val.toLocaleString()+'</div></div>'));
+}
+function renderClasses(){
+  const el=document.getElementById("classChart"); el.innerHTML="";
+  [...rfClass].sort((a,b)=>b[1]-a[1]).forEach(([name,val])=>el.insertAdjacentHTML("beforeend",'<div class="class-row"><div class="class-label">'+name+'</div><div class="class-track"><div class="class-fill" style="width:'+Math.max(val*100,.6)+'%"></div></div><div class="class-value">'+val.toFixed(3)+'</div></div>'));
+}
+document.querySelectorAll(".tabbtn").forEach(btn=>btn.addEventListener("click",()=>{
+  document.querySelectorAll(".tabbtn").forEach(b=>{b.classList.remove("active");b.setAttribute("aria-selected","false")});
+  document.querySelectorAll(".panel").forEach(p=>p.hidden=true);
+  btn.classList.add("active");btn.setAttribute("aria-selected","true");document.getElementById(btn.dataset.tab).hidden=false;
+}));
+document.getElementById("datasetSelect").addEventListener("change",renderExplore);
+document.getElementById("metricSelect").addEventListener("change",renderExplore);
+renderMacro();renderExplore();renderSupport();renderClasses();
+</script>
+</body>
+</html>
